@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TALLER ELCA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('vista_gestion') }}" style="margin-left: 1rem; color: #4169E1; font-weight: bold; font-size: 50px;">ELCA</a> <!-- Azul rey y negrita -->
+            <div class="d-flex flex-column align-items-start ms-3">
+                <!-- Verificar si hay sesión iniciada -->
+                {% if 'idUsuario' in session %}
+                    <span class="navbar-text" style="font-size: 18px; color: #4169E1;">
+                        Bienvenido, {{ session['username'] }}
+                    </span>
+                    <a class="nav-link" href="{{ url_for('logout') }}" style="font-size: 16px; color: #4169E1;">
+                        Cerrar sesión
+                    </a>
+                {% endif %}
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item me-3">
+                        <a class="nav-link" href="{{ url_for('clientes') }}">Inicio</a>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a style="text-align: center;" class="nav-link" href="{{ url_for('dashboard') }}">Maquinas en Taller</a>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a class="nav-link" href="{{ url_for('dashboardingreso') }}">Maquinas Entregadas</a>
+                    </li>
+                    <li class="nav-item me-3">
+                        <button style="height: 52px; width: 80px;" class="btn btn-primary btn-sm mt-2 mt-lg-0" id="buscar" data-bs-toggle="modal" data-bs-target="#buscarModal2">Agregar Cliente</button>
+                    </li>
+                    <li class="nav-item me-3">
+                        <button style="height: 52px; width: 80px;" class="btn btn-primary btn-sm mt-2 mt-lg-0" id="buscar" data-bs-toggle="modal" data-bs-target="#buscarModal">Buscar</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                    <div>
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endwith %}
+        <!-- Contenido de la página -->
+        {% block content %}{% endblock %}
+    </div>
+
+ <!-- Modal por serie -->
+<div class="modal fade" id="buscarModal" tabindex="-1" aria-labelledby="buscarModalSerieLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buscarModalSerieLabel">Buscar por número de serie</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/buscar" method="post">
+                <div class="modal-body">
+                    <p>Búsqueda por número de serie</p>
+                    <input class="form-control" type="text" placeholder="Ingrese número de serie" id="numeroSerieInput" name="numero" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Buscar Cliente -->
+<div class="modal fade" id="buscarModal2" tabindex="-1" aria-labelledby="buscarModalClienteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buscarModalClienteLabel">Buscar Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/buscar2" method="post">
+                <div class="modal-body">
+                    <p class="text-center" style="color: rgba(0, 0, 0, 0.6);">Primero verifiquemos si el cliente existe en el sistema</p>
+                    <hr>
+                    <input class="form-control" type="text" placeholder="Ingrese RUT del cliente" id="rutClienteInput" name="rut" required>
+                </div>
+                <div class="modal-footer">
+                    <button id="buscarClienteBtn" type="button" class="btn btn-primary">Buscar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Agregar Cliente -->
+<div class="modal fade" id="agregarModal" tabindex="-1" aria-labelledby="agregarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="agregarModalLabel">Agregar Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="agregarClienteform">
+                    <div class="mb-3">
+                        <label for="rut" class="form-label">Rut:</label>
+                        <input type="text" id="rut" name="rut" class="form-control" required>
+                        <small class="form-text text-muted">Si corresponde a un colegio el Rut es la letra y numero identificador del colegio</small>
+                        <small class="form-text text-muted">Ejemplo: D-xx </small>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" class="form-control" required>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label for="apellido" class="form-label">Apellido:</label>
+                        <input type="text" id="apellido" name="apellido" class="form-control" required>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label for="empresa" class="form-label">Empresa:</label>
+                        <input type="text" id="empresa" name="empresa" class="form-control">
+                    </div>
+    
+                    <div class="mb-3">
+                        <label for="correo" class="form-label">Correo electrónico:</label>
+                        <input type="email" id="correo" name="correo" class="form-control">
+                    </div>
+    
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono:</label>
+                        <input type="text" id="telefono" name="telefono" class="form-control">
+                        <small class="form-text text-muted">Ingresar sin dígito verificador (+569)</small>
+                    </div>
+    
+                    <div class="text-center">
+                        <button id="agregarCliente" type="submit" class="btn btn-primary">Agregar Cliente</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
+
+    <script>
+     document.getElementById('buscarClienteBtn').addEventListener('click', function() {
+    procesarRut();
+});
+
+document.getElementById('rutClienteInput').addEventListener('keydown', function(event) {
+    // Si la tecla presionada es 'Enter' (código 13), ejecuta la función
+    if (event.key === 'Enter') {
+        procesarRut();
+    }
+});
+
+function procesarRut() {
+    const rut = document.getElementById('rutClienteInput').value;
+
+    // Verificar que no esté vacío
+    if (!rut) {
+        alert('Por favor ingrese un RUT válido.');
+        return;
+    }
+
+    // Enviar solicitud AJAX
+    fetch('/buscar2', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ rut })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.existe) {
+            // Redirigir a otra página si el RUT ya existe
+            window.location.href = `/cliente/${rut}`;  // Redirige al cliente con el RUT
+        } 
+        else {
+            // Cerrar el modal de buscar
+            const buscarModal = bootstrap.Modal.getInstance(document.getElementById('buscarModal2'));
+            buscarModal.hide();
+
+            // Abrir el modal de agregar cliente
+            const agregarModal = new bootstrap.Modal(document.getElementById('agregarModal'));
+            agregarModal.show();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+   // Manejar el clic en el botón "Agregar Cliente"
+        document.getElementById('agregarClienteform').addEventListener('submit', function(e) {
+        e.preventDefault();  // Evitar que el formulario se envíe de forma tradicional
+
+        // Obtener los valores del formulario
+        const rut = document.getElementById('rut').value.trim();  // Usar .trim() para eliminar espacios en blanco
+        const nombre = document.getElementById('nombre').value.trim();
+        const apellido = document.getElementById('apellido').value.trim();
+        const empresa = document.getElementById('empresa').value.trim();
+        const correo = document.getElementById('correo').value.trim();
+        const telefono = document.getElementById('telefono').value.trim();
+
+        // Validación básica
+        if (!rut || !nombre || !apellido) {
+            alert('Por favor complete todos los campos obligatorios.');
+            return;
+        }
+
+        // Crear el objeto con los datos del formulario
+        const data = {
+            rut: rut,
+            nombre: nombre,
+            apellido: apellido,
+            empresa: empresa,
+            correo: correo,
+            telefono: telefono
+        };
+
+        // Realizar la solicitud AJAX
+        fetch('/nuevo_cliente', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)  // Convertir los datos en formato JSON
+        })
+        .then(response => response.json())  // Convertir la respuesta en JSON
+        .then(data => {
+            if (data.success) {
+                // Si la respuesta tiene éxito
+                alert(data.message || 'Cliente agregado con éxito.');
+                  // Recarga la página actual
+                // Cerrar el modal
+                const agregarModal = bootstrap.Modal.getInstance(document.getElementById('agregarModal'));
+                agregarModal.hide();
+                location.reload();
+            } else {
+                // Si hubo un error en el servidor
+                alert(data.error || 'Error al agregar el cliente.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error en la solicitud.');
+        });
+    });
+</script>
+
+</body>
+</html>

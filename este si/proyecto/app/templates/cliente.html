@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 style="display: flex; justify-content: center;">Datos de contacto Cliente</h1>
+    <hr>
+    <p style="font-size: 25px;">Nombre Cliente/Empresa: {{ cliente.nombre }} {{ cliente.apellido }}</p>
+    <p style="font-size: 20px;">Correo electronico: {{ cliente.correo }}</p>
+    <p style="font-size: 20px;">Teléfono: +569{{ cliente.telefono }}</p>
+    <hr><br>
+    <div style="display: inline-flex; justify-content: end;"> 
+        <h2 style="padding-right: 96vh; padding-bottom: 20px;">Máquinas del cliente</h2>
+        <a style="width: 150px; height: 47px; " href="{{ url_for('nueva_maquina', rut=cliente.rut) }}" class="btn btn-primary">Agregar Máquina</a>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tipo de Equipo</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Número de Serie</th>
+                <th>Ubicacion</th>
+                <th>Inf. Reparacion</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for maquina in maquinas %}
+                <tr>
+                    <td>{{ maquina.tipo_equipo }}</td>
+                    <td>{{ maquina.marca }}</td>
+                    <td>{{ maquina.modelo }}</td>
+                    <td>{{ maquina.numeroSerie }}</td>
+                    <td>{{ maquina.estado_equipo }}</td>
+                    <td> {{ maquina.info }}</td>
+                    <td>
+                        <a href="{{ url_for('maquina', numeroSerie=maquina.numeroSerie) }}" class="btn btn-info">Ver</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

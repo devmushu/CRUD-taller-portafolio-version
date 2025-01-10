@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Máquinas en Ingreso</h1>
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Máquina</th>
+                    <th>S/N</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in clientes_maquinas %}
+                    <tr>
+                        <td>{{ item.nombre }}</td>
+                        <td>{{ item.apellido }}</td>
+                        <td>{{ item.marca }} {{ item.modelo }}</td>
+                        <td>{{ item.numeroSerie }}</td>
+                        <td>{{ item.estado_equipo }}</td>
+                        <td>
+                            <a href="{{ url_for('maquina', numeroSerie=item.numeroSerie) }}" class="btn btn-info btn-sm">Ver</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

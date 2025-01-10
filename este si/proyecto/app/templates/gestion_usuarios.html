@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>Gestión de usuarios</h1>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearUsuarioModal" style="font-size: 16px;">
+            Crear Usuario
+        </button>
+    </div>
+    <table class="table table-striped table-hover mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in usuarios %}
+            <tr>
+                <td>{{ item.username }}</td>
+                <td>{{ item.rol }}</td>
+                <td>
+                    <a class="btn btn-danger btn-sm" href="#" onclick="eliminarUsuario('{{ item.idUsuario }}'); return false;">
+                        Eliminar usuario
+                    </a>
+                    <!-- Formulario oculto para eliminación -->
+                    <form id="eliminarForm{{ item.idUsuario }}" action="{{ url_for('eliminar_cliente', idUsuario=item.idUsuario) }}" method="POST" style="display: none;"></form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal para Crear Usuario -->
+<div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-labelledby="crearUsuarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearUsuarioModalLabel">Crear Nuevo Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="crearUsuarioForm" action="{{ url_for('crear_usuario') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rol" class="form-label">Rol</label>
+                        <select class="form-select" id="rol" name="rol" required>
+                            <option value="">Seleccione un rol</option>
+                            <option value="Administrador">Administrador</option>
+                            <option value="editor">Editor</option>
+                            <option value="lector">Lector</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Crear Usuario</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function eliminarUsuario(idUsuario) {
+        // Confirmar antes de eliminar
+        if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+            // Enviar el formulario de eliminación correspondiente
+            document.getElementById('eliminarForm' + idUsuario).submit();
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 style="display: flex; justify-content: center;">Datos Equipo</h1>
+    <p style="font-size: 20px;">Marca: {{ maquina.marca }}</p>
+    <p style="font-size: 20px;">Modelo: {{ maquina.modelo }}</p>
+    <p style="font-size: 20px;">Número de Serie: {{ maquina.numeroSerie }}</p>
+    <p style="font-size: 25px;">Ubicacion: {{ maquina.estado_equipo }}</p>
+    <hr><br>
+    <div style="display: inline-flex; justify-content: end;"> 
+        <h2 style="padding-right: 98vh; padding-bottom: 20px;">Informes del Equipo</h2>
+        <a style="width: 150px; height: 47px; " href="{{ url_for('nuevo_informe', numeroSerie=maquina.numeroSerie) }}" class="btn btn-primary">Agregar Informe</a>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Fecha de Entrada</th>
+                <th>Fecha de Salida</th>
+                <th>Contador</th>
+                <th>Observacion</th>
+                <th>Problema Detectado</th>
+                <th>Diagnóstico Técnico</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for informe in informes %}
+                <tr>
+                    <td>{{ informe.fecha_entrada }}</td>
+                    <td>{{ informe.fecha_salida }}</td>
+                    <td>{{ informe.contador }}</td>
+                    <td>{{ informe.observacion }}</td>
+                    <td>{{ informe.problema_detectado }}</td>
+                    <td>{{ informe.diagnostico_tecnico }}</td>
+                    <td>{{ informe.estado_reparacion }}</td>
+                    <td>
+                        <a href="{{ url_for('informe', idInforme=informe.idInforme) }}" class="btn btn-info">Ver</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Resultado de Búsqueda por Número de Serie: {{ consulta.numeroSerie }}</h1>
+        {% if consulta %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    Información de la Máquina y Cliente
+                </div>
+                <div class="card-body">
+                    <p class="card-text"><strong>Nombre Cliente/Empresa:</strong> {{ consulta.nombre }} {{ consulta.apellido }}</p>
+                    <p class="card-text"><strong>Correo Electrónico:</strong> {{ consulta.correo }}</p>
+                    <p class="card-text"><strong>Teléfono:</strong> {{ consulta.telefono }}</p>
+                    <hr>
+                    <p class="card-text"><strong>Tipo de Equipo:</strong> {{ consulta.tipo_equipo }}</p>
+                    <p class="card-text"><strong>Marca:</strong> {{ consulta.marca }}</p>
+                    <p class="card-text"><strong>Modelo:</strong> {{ consulta.modelo }}</p>
+                    <p class="card-text"><strong>Número de Serie:</strong> {{ consulta.numeroSerie }}</p>
+                    <!-- Enlace para ver más detalles de la máquina, si es necesario -->
+                    <a href="{{ url_for('maquina', numeroSerie=consulta.numeroSerie) }}" class="btn btn-primary">Ver Informes</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                No se encontró ninguna máquina con ese número de serie.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

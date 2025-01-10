@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Nueva Máquina</h1>
+<form method="post">
+    <div class="form-group">
+        <label for="numeroSerie">Número de Serie</label>
+        <input type="text" class="form-control" id="numeroSerie" name="numeroSerie" required>
+    </div>
+    <div class="form-group">
+        <label for="tipo_equipo">Tipo de Equipo</label>
+        <select class="form-control" id="tipo_equipo" name="tipo_equipo">
+            <option value="MULTIFUNCINAL">Multifuncional</option>
+            <option value="COPIADORA">Copiadora</option>
+            <option value="IMPRESORA TINTA">Impresora Tinta</option>
+            <option value="OTRO">Otro</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="marca">Marca</label>
+        <select class="form-control" id="marca" name="marca">
+            <option value="Brother">Brother</option>
+            <option value="Kyocera">Kyocera</option>
+            <option value="Toshiba">Toshiba</option>
+            <option value="Duplo">Duplo</option>
+            <option value="Canon">Canon</option>
+            <option value="Otro">Otro</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="modelo">Modelo</label>
+        <input type="text" class="form-control" id="modelo" name="modelo" required>
+    </div>
+    <div class="form-group">
+        <label for="estado_equipo">Ubicacion</label>
+        <select class="form-control" id="estado_equipo" name="estado_equipo" onchange="updateInfoOptions()">
+            <option value="EN TALLER">En Taller</option>
+            <option value="ENTREGADO">Entregado</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="info">Informacion de reparacion</label>
+        <select class="form-control" id="info" name="info">
+            <option value="EN REPARACION">En reparación</option>
+            <option value="ESPERA APROBACION PRESUPUESTO">Espera de Presupuesto</option>
+            <option value="ESPERA RESPUESTOS">Espera de Repuesto</option>
+            <option value="RECHAZADO">Rechazado/Maquina dada de baja</option>
+        </select>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
+<script>
+    function updateInfoOptions() {
+        const estadoEquipo = document.getElementById('estado_equipo').value;
+        const infoSelect = document.getElementById('info');
+
+        // Limpia las opciones existentes
+        infoSelect.innerHTML = '';
+
+        if (estadoEquipo === 'ENTREGADO') {
+        // Agregar opción vacía
+        let opcionesEntregado = [
+            { value: 'REPARADO', text: 'Reparado' },
+            { value: 'REPARACION_RECHAZADA', text: 'Reparación rechazada' }
+        ];
+
+        opcionesEntregado.forEach(op => {
+            const option = document.createElement('option');
+            option.value = op.value;
+            option.textContent = op.text;
+            infoSelect.appendChild(option);
+        });
+        } else {
+            // Agregar opciones habituales
+            const opciones = [
+                { value: 'EN REPARACION', text: 'En reparación' },
+                { value: 'ESPERA APROBACION PRESUPUESTO', text: 'Espera de Presupuesto' },
+                { value: 'ESPERA RESPUESTOS', text: 'Espera de Repuesto' },
+                { value: 'RECHAZADO', text: 'Rechazado/Maquina dada de baja' },
+            ];
+
+            opciones.forEach(op => {
+                const option = document.createElement('option');
+                option.value = op.value;
+                option.textContent = op.text;
+                infoSelect.appendChild(option);
+            });
+        }
+    }
+</script>
+{% endblock %}

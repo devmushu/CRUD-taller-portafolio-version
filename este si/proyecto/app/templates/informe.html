@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Informe</h1>
+    <p>Fecha de Entrada: {{ informe.fecha_entrada }}</p>
+    <p>Fecha de Salida: {{ informe.fecha_salida }}</p>
+    <p>Contador: {{ informe.contador }}</p>
+    <p>Problema Detectado Cliente: {{ informe.problema_detectado }}</p>
+    <p>Diagnóstico Técnico: {{ informe.diagnostico_tecnico }}</p>
+    <p>ESTADO: {{ informe.estado_reparacion }}</p>
+
+    <!-- Botón para descargar el archivo PDF -->
+    <a href="/descargar_pdf/{{informe.idInforme }}" class="btn btn-primary" role="button">Descargar PDF</a>
+{% endblock %}

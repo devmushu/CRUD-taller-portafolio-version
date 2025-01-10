@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir archivo</title>
+</head>
+<body>
+
+<h2>Formulario para subir archivo</h2>
+
+<!-- Formulario para subir archivos -->
+<form action="/ruta_del_servidor" method="POST" enctype="multipart/form-data">
+    <label for="archivo">Selecciona un archivo:</label>
+    <input type="file" id="archivo" name="archivo" accept="application/pdf" required><br><br>
+
+
+    <input type="submit" value="Subir archivo">
+</form>
+
+</body>
+</html>

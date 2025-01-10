@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST">
+    <label for="username">Usuario:</label>
+    <input type="text" name="username" id="username" required>
+
+    <label for="password">Contraseña:</label>
+    <input type="password" name="password" id="password" required>
+
+    <label for="rol">Rol:</label>
+    <select name="rol" id="rol" required>
+        <option value="lector">Lector</option>
+        <option value="editor">Editor</option>
+    </select>
+
+    <button type="submit">Crear Usuario</button>
+</form>
+{% endblock %}
