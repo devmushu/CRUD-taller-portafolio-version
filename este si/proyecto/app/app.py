@@ -563,11 +563,6 @@ def search2():
 
 @app.route('/descargar_pdf/<int:idInforme>', methods=['GET'])
 def descargar_pdf(idInforme):
-    
-    # Ruta para guardar archivos generados temporalmente
-    TEMP_FOLDER = "archivos_temp"
-    if not os.path.exists(TEMP_FOLDER):
-        os.makedirs(TEMP_FOLDER)
     # Recuperar el contenido Base64 desde la base de datos
     conn = sqlite3.connect('taller.db')
     conn.row_factory = sqlite3.Row
@@ -582,11 +577,13 @@ def descargar_pdf(idInforme):
     base64_content = archivo['reporte_fisico']
     
     try:
+        TEMP_FOLDER = r"C:\Users\Francisco\Desktop\base de datos elca taller\este si\proyecto\app\archivos_temp"
+        if not os.path.exists(TEMP_FOLDER):
+            os.makedirs(TEMP_FOLDER)
         # Decodificar el Base64 a binario
         pdf_content = base64.b64decode(base64_content)
-        
         # Guardar temporalmente el archivo PDF
-        pdf_path = os.path.join(TEMP_FOLDER)
+        pdf_path = os.path.join(TEMP_FOLDER, f"reporte_{idInforme}.pdf")
         with open(pdf_path, "wb") as pdf_file:
             pdf_file.write(pdf_content)
         
